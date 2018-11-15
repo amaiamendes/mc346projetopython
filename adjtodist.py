@@ -123,14 +123,13 @@ for i in range(0,len(content)):
 g = True
 glist = []
 p = []
- # Indíce para identificar o passageiro na saída final
-passengerIndex = 0
+ # Indíce para identificar o passageiro na saída final, começando em 1
+passengerIndex = 1
 for x in content:
     if x == []:
         g = False
         continue
     if g == True:
-        print('vertice:', x)
         glist.append((x[0], x[1], x[2]))
     else:
         if len(x) == 2:
@@ -279,6 +278,7 @@ for x in a:
             pools.append(p[3])
 
 print("\npools")
+# Lambda function que recebe um tupla do percurso e parseia para uma string
 makeRoute = lambda route: ' '.join(map(str, [int(s) for s in route]))
 for x in pools:
     # Se for uma tupla de passageiros no pool, então o parse é diferente.
