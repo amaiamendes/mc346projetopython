@@ -66,7 +66,7 @@ class Graph:
         assert source in self.vertices, 'Such source node doesn\'t exist'
 
         # 1. Mark all nodes unvisited and store them.
-        # 2. Set the distance to zero for our initial node 
+        # 2. Set the distance to zero for our initial node
         # and to infinity for other nodes.
         distances = {vertex: inf for vertex in self.vertices}
         previous_vertices = {
@@ -76,28 +76,28 @@ class Graph:
         vertices = self.vertices.copy()
 
         while vertices:
-            # 3. Select the unvisited node with the smallest distance, 
+            # 3. Select the unvisited node with the smallest distance,
             # it's current node now.
             current_vertex = min(
                 vertices, key=lambda vertex: distances[vertex])
 
-            # 6. Stop, if the smallest distance 
+            # 6. Stop, if the smallest distance
             # among the unvisited nodes is infinity.
             if distances[current_vertex] == inf:
                 break
 
-            # 4. Find unvisited neighbors for the current node 
+            # 4. Find unvisited neighbors for the current node
             # and calculate their distances through the current node.
             for neighbour, cost in self.neighbours[current_vertex]:
                 alternative_route = distances[current_vertex] + cost
 
-                # Compare the newly calculated distance to the assigned 
+                # Compare the newly calculated distance to the assigned
                 # and save the smaller one.
                 if alternative_route < distances[neighbour]:
                     distances[neighbour] = alternative_route
                     previous_vertices[neighbour] = current_vertex
 
-            # 5. Mark the current node as visited 
+            # 5. Mark the current node as visited
             # and remove it from the unvisited set.
             vertices.remove(current_vertex)
 
@@ -121,6 +121,7 @@ for i in range(0,len(content)):
 g = True
 glist = []
 p = []
+passengerIndex = 0
 for x in content:
     if x == []:
         g = False
@@ -129,12 +130,14 @@ for x in content:
         glist.append((x[0], x[1], x[2]))
     else:
         if len(x) == 2:
-            p.append((x[0], x[1], -1))
+            p.append((passengerIndex, x[0], x[1], -1))
         else:
-            p.append((x[0], x[1], x[2]))
+            p.append((passengerIndex, x[0], x[1], x[2]))
+        passengerIndex = passengerIndex + 1
 
 print(content)
 print(glist)
+print('\nPassageiros')
 print(p)
 
 graph = Graph(glist)
@@ -142,6 +145,8 @@ graph = Graph(glist)
 dist = {}
 for v in graph.vertices:
 	dist[v], o = graph.dijkstra(v,v)
+
+print('\nDistancia entre os vertices')
 for x in dist:
     print (x)
     for y in dist[x]:
@@ -233,14 +238,14 @@ class pool():
             # print("pool_path:", self.pool_path)
             # print("pool_incov_max_min:", self.pool_incov_max_min, "\n")
 
-        return self.p1, self.p2,self.pool_path,self.pool_incov_max_min 
+        return self.p1, self.p2,self.pool_path,self.pool_incov_max_min
 
 a = {}
 for i in range(0,len(p)):
     a[i] = {}
     for j in range(0,len(p)):
         if i != j:
-            a[i][j] = pool(p[i],p[j]).best_pool(p[i][0], p[j][0], p[i][1], p[j][1], p[i][2], p[j][2], dist)
+            a[i][j] = pool(p[i],p[j]).best_pool(p[i][1], p[j][1], p[i][2], p[j][2], p[i][3], p[j][3], dist)
 
 for x in a:
     print (x)
@@ -269,7 +274,10 @@ for x in a:
 
 print("\npools")
 for x in pools:
-    print(x)
+    if(type(x[0]) == tuple):
+        print('passageiros:', x[0][0], x[1][0], 'percurso:', x[2])
+    else:
+        print('passageiro:', x[0], 'percurso:', x[1], x[2])
 
 
 
