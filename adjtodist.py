@@ -116,23 +116,28 @@ for line in sys.stdin:
     content.append(line)
 
 for i in range(0,len(content)):
-    content[i] = [int(s) for s in content[i].split() if s.isdigit()]
+    # Removido a verificação isDigit e o cast para int. Motivo: no teste3 tem entradas do tipo float.
+    content[i] = [float(s) for s in content[i].split()]
+
 
 g = True
 glist = []
 p = []
+ # Indíce para identificar o passageiro na saída final
 passengerIndex = 0
 for x in content:
     if x == []:
         g = False
         continue
     if g == True:
+        print('vertice:', x)
         glist.append((x[0], x[1], x[2]))
     else:
         if len(x) == 2:
             p.append((passengerIndex, x[0], x[1], -1))
         else:
             p.append((passengerIndex, x[0], x[1], x[2]))
+        # Atualiza o indíce para o próximo passageiro
         passengerIndex = passengerIndex + 1
 
 print(content)
@@ -245,6 +250,7 @@ for i in range(0,len(p)):
     a[i] = {}
     for j in range(0,len(p)):
         if i != j:
+            # Desloquei as entradas para best_pool um elemento para a direita por causa da inserção do índice do passageiro
             a[i][j] = pool(p[i],p[j]).best_pool(p[i][1], p[j][1], p[i][2], p[j][2], p[i][3], p[j][3], dist)
 
 for x in a:
@@ -273,11 +279,13 @@ for x in a:
             pools.append(p[3])
 
 print("\npools")
+makeRoute = lambda route: ' '.join(map(str, [int(s) for s in route]))
 for x in pools:
+    # Se for uma tupla de passageiros no pool, então o parse é diferente.
     if(type(x[0]) == tuple):
-        print('passageiros:', x[0][0], x[1][0], 'percurso:', x[2])
+        print('passageiros:', x[0][0], x[1][0], 'percurso:', makeRoute(x[2]))
     else:
-        print('passageiro:', x[0], 'percurso:', x[1], x[2])
+        print('passageiro:', x[0], 'percurso:', int(x[1]), int(x[2]))
 
 
 
