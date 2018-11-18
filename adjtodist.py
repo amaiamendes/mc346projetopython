@@ -246,11 +246,11 @@ class pool():
 
 a = {}
 for i in range(0,len(p)):
-    a[i] = {}
+    a[i+1] = {}
     for j in range(0,len(p)):
         if i != j:
             # Desloquei as entradas para best_pool um elemento para a direita por causa da inserção do índice do passageiro
-            a[i][j] = pool(p[i],p[j]).best_pool(p[i][1], p[j][1], p[i][2], p[j][2], p[i][3], p[j][3], dist)
+            a[i+1][j+1] = pool(p[i],p[j]).best_pool(p[i][1], p[j][1], p[i][2], p[j][2], p[i][3], p[j][3], dist)
 
 for x in a:
     print (x)
@@ -259,7 +259,8 @@ for x in a:
 
 unavailable = []
 pools = []
-for x in a:
+x = len(a)
+while x != 0:
     print(unavailable)
     print(x)
     if x not in unavailable:
@@ -275,7 +276,9 @@ for x in a:
             unavailable.append(x)
             unavailable.append(min_pool)
         else:
-            pools.append(p[3])
+            pools.append(p[x-1])
+    print("pools:", pools)
+    x = x - 1;
 
 print("\npools")
 # Lambda function que recebe um tupla do percurso e parseia para uma string
@@ -285,7 +288,10 @@ for x in pools:
     if(type(x[0]) == tuple):
         print('passageiros:', x[0][0], x[1][0], 'percurso:', makeRoute(x[2]))
     else:
-        print('passageiro:', x[0], 'percurso:', int(x[1]), int(x[2]))
+        if (x[3] == -1):
+            print('passageiro:', x[0], 'percurso:', int(x[1]), int(x[2]))
+        else:
+            print('passageiro:', x[0], 'percurso:', int(x[3]), int(x[2]))
 
 
 
