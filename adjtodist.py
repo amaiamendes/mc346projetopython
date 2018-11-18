@@ -101,7 +101,6 @@ class Graph:
             # and remove it from the unvisited set.
             vertices.remove(current_vertex)
 
-        # print(distances)
         path, current_vertex = deque(), dest
         while previous_vertices[current_vertex] is not None:
             path.appendleft(current_vertex)
@@ -109,6 +108,70 @@ class Graph:
         if path:
             path.appendleft(current_vertex)
         return distances, path
+
+class pool():
+    def __init__(self, p1, p2):
+        self.p1 = p1
+        self.p2 = p2
+
+    def best_pool(self, s1, s2, d1, d2, x1, x2, dist):
+        self.pool_path = ()
+        self.pool_incov_max_min = np.inf
+
+        if x1 != -1:
+            s1 = x1
+        if x2 != -1:
+            s2 = x2
+
+        if x2 == -1:
+        # s1, s2, d2, d1
+            incov1 = (dist[s1][s2]+dist[s2][d2]+dist[d2][d1])/dist[s1][d1]
+            incov2 = dist[s2][d2]/dist[s2][d2]
+            path = (s1, s2, d2, d1)
+            if max(incov1,incov2) <= 1.4:
+                incov_max = max(incov1,incov2)
+
+                if incov_max < self.pool_incov_max_min:
+                    self.pool_path = path
+                    self.pool_incov_max_min = incov_max
+
+            # s1, s2, d1, d2
+            incov1 = (dist[s1][s2]+dist[s2][d1])/dist[s1][d1]
+            incov2 = (dist[s2][d1]+dist[d1][d2])/dist[s2][d2]
+            path = (s1, s2, d1, d2)
+            if max(incov1,incov2) <= 1.4:
+                incov_max = max(incov1,incov2)
+
+                if incov_max < self.pool_incov_max_min:
+                    self.pool_path = path
+                    self.pool_incov_max_min = incov_max
+
+        if x1 == -1:
+
+        # s2, s1, d2, d1
+            incov1 = (dist[s1][d2]+dist[d2][d1])/dist[s1][d1]
+            incov2 = (dist[s2][s1]+dist[s1][d2])/dist[s2][d2]
+            path = (s2, s1, d2, d1)
+            if max(incov1,incov2) <= 1.4:
+                incov_max = max(incov1,incov2)
+
+                if incov_max < self.pool_incov_max_min:
+                    self.pool_path = path
+                    self.pool_incov_max_min = incov_max
+
+            # s2, s1, d1, d2
+            incov1 = dist[s1][d1]/dist[s1][d1]
+            incov2 = (dist[s2][s1]+dist[s1][d1]+dist[d1][d2])/dist[s2][d2]
+            path = (s2, s1, d1, d2)
+            if max(incov1,incov2) <= 1.4:
+                incov_max = max(incov1,incov2)
+
+                if incov_max < self.pool_incov_max_min:
+                    self.pool_path = path
+                    self.pool_incov_max_min = incov_max
+
+        return self.p1, self.p2,self.pool_path,self.pool_incov_max_min
+
 
 content = []
 for line in sys.stdin:
@@ -139,110 +202,11 @@ for x in content:
         # Atualiza o indíce para o próximo passageiro
         passengerIndex = passengerIndex + 1
 
-print(content)
-print(glist)
-print('\nPassageiros')
-print(p)
-
 graph = Graph(glist)
 
 dist = {}
 for v in graph.vertices:
 	dist[v], o = graph.dijkstra(v,v)
-
-print('\nDistancia entre os vertices')
-for x in dist:
-    print (x)
-    for y in dist[x]:
-        print (y,':',dist[x][y])
-
-
-class pool():
-    def __init__(self, p1, p2):
-        self.p1 = p1
-        self.p2 = p2
-
-    def best_pool(self, s1, s2, d1, d2, x1, x2, dist):
-        self.pool_path = ()
-        self.pool_incov_max_min = np.inf
-
-        if x1 != -1:
-            s1 = x1
-        if x2 != -1:
-            s2 = x2
-
-        if x2 == -1:
-        # s1, s2, d2, d1
-            incov1 = (dist[s1][s2]+dist[s2][d2]+dist[d2][d1])/dist[s1][d1]
-            incov2 = dist[s2][d2]/dist[s2][d2]
-            path = (s1, s2, d2, d1)
-            if max(incov1,incov2) <= 1.4:
-                incov_max = max(incov1,incov2)
-            # print("path:", path)
-            # print("incov1=", incov1)
-            # print("incov2=", incov2)
-            # print("incov_max=", incov_max)
-
-                if incov_max < self.pool_incov_max_min:
-                    self.pool_path = path
-                    self.pool_incov_max_min = incov_max
-            # print("pool_path:", self.pool_path)
-            # print("pool_incov_max_min:", self.pool_incov_max_min, "\n")
-
-            # s1, s2, d1, d2
-            incov1 = (dist[s1][s2]+dist[s2][d1])/dist[s1][d1]
-            incov2 = (dist[s2][d1]+dist[d1][d2])/dist[s2][d2]
-            path = (s1, s2, d1, d2)
-            if max(incov1,incov2) <= 1.4:
-                incov_max = max(incov1,incov2)
-            # print("path:", path)
-            # print("incov1=", incov1)
-            # print("incov2=", incov2)
-            # print("incov_max=", incov_max)
-
-                if incov_max < self.pool_incov_max_min:
-                    self.pool_path = path
-                    self.pool_incov_max_min = incov_max
-            # print("pool_path:", self.pool_path)
-            # print("pool_incov_max_min:", self.pool_incov_max_min, "\n")
-
-        if x1 == -1:
-
-        # s2, s1, d2, d1
-            incov1 = (dist[s1][d2]+dist[d2][d1])/dist[s1][d1]
-            incov2 = (dist[s2][s1]+dist[s1][d2])/dist[s2][d2]
-            path = (s2, s1, d2, d1)
-            if max(incov1,incov2) <= 1.4:
-                incov_max = max(incov1,incov2)
-            # print("path:", path)
-            # print("incov1=", incov1)
-            # print("incov2=", incov2)
-            # print("incov_max=", incov_max)
-
-                if incov_max < self.pool_incov_max_min:
-                    self.pool_path = path
-                    self.pool_incov_max_min = incov_max
-            # print("pool_path:", self.pool_path)
-            # print("pool_incov_max_min:", self.pool_incov_max_min, "\n")
-
-            # s2, s1, d1, d2
-            incov1 = dist[s1][d1]/dist[s1][d1]
-            incov2 = (dist[s2][s1]+dist[s1][d1]+dist[d1][d2])/dist[s2][d2]
-            path = (s2, s1, d1, d2)
-            if max(incov1,incov2) <= 1.4:
-                incov_max = max(incov1,incov2)
-            # print("path:", path)
-            # print("incov1=", incov1)
-            # print("incov2=", incov2)
-            # print("incov_max=", incov_max)
-
-                if incov_max < self.pool_incov_max_min:
-                    self.pool_path = path
-                    self.pool_incov_max_min = incov_max
-            # print("pool_path:", self.pool_path)
-            # print("pool_incov_max_min:", self.pool_incov_max_min, "\n")
-
-        return self.p1, self.p2,self.pool_path,self.pool_incov_max_min
 
 a = {}
 for i in range(0,len(p)):
@@ -252,17 +216,10 @@ for i in range(0,len(p)):
             # Desloquei as entradas para best_pool um elemento para a direita por causa da inserção do índice do passageiro
             a[i+1][j+1] = pool(p[i],p[j]).best_pool(p[i][1], p[j][1], p[i][2], p[j][2], p[i][3], p[j][3], dist)
 
-for x in a:
-    print (x)
-    for y in a[x]:
-        print (y,':',a[x][y])
-
 unavailable = []
 pools = []
 x = len(a)
 while x != 0:
-    print(unavailable)
-    print(x)
     if x not in unavailable:
         min_incov = np.inf
         min_pool = -1
@@ -277,10 +234,8 @@ while x != 0:
             unavailable.append(min_pool)
         else:
             pools.append(p[x-1])
-    print("pools:", pools)
     x = x - 1;
 
-print("\npools")
 # Lambda function que recebe um tupla do percurso e parseia para uma string
 makeRoute = lambda route: ' '.join(map(str, [int(s) for s in route]))
 for x in pools:
@@ -292,11 +247,6 @@ for x in pools:
             print('passageiro:', x[0], 'percurso:', int(x[1]), int(x[2]))
         else:
             print('passageiro:', x[0], 'percurso:', int(x[3]), int(x[2]))
-
-
-
-
-
 
 # print(graph.vertices)
 # print(graph.dijkstra(0, 4))
